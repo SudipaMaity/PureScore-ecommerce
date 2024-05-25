@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import multer from "multer";
 // import bodyParser from "body-parser";
-import cors from cors ; 
+import cors from "cors";
 
 import morgan from "morgan"; // morgan show's api request in console
 import connectDB from "./config/db.js";
@@ -24,9 +24,9 @@ connectDB();
 // rest object
 const app = express();
 
-// 
-app.use(cors({ credentials: true }))
-// app.use(cors()) 
+//
+app.use(cors({ credentials: true }));
+// app.use(cors())
 
 // body Parser
 // app.use(bodyParser.urlencoded({ extended: false }));
