@@ -16,9 +16,13 @@ const productSchema = new mongoose.Schema(
       ref: "Category",
       required: true,
     },
+    // image: {
+    //   data: Buffer,
+    //   contentType: String,
+    // },
     image: {
-      data: Buffer,
-      contentType: String,
+      type: String,
+      require: true,
     },
     price: {
       type: Number,

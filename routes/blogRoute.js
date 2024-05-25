@@ -1,11 +1,12 @@
 import express from "express";
-import formidable from "express-formidable"; //for image storage
+// import formidable from "express-formidable";
+//for image storage
 import multer from "multer";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 import {
   createBlogController,
   deleteBlogController,
-  fetchBlogImageController,
+  // fetchBlogImageController,
   fetchBlogsController,
   fetchSingleBlogController,
   updateBlogController,
@@ -14,6 +15,8 @@ import {
 export const router = express.Router();
 
 const upload = multer({ dest: "uploads/" });
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
 
 // routes
 
@@ -34,24 +37,34 @@ router.post(
 );
 
 // update
+// router.put(
+//   "/update-blog/:bid",
+//   // "/update-blog/:slug",
+//   requireSignIn,
+//   isAdmin,
+//   formidable(),
+//   updateBlogController
+// );
 router.put(
   "/update-blog/:bid",
   // "/update-blog/:slug",
   requireSignIn,
   isAdmin,
-  formidable(),
+  upload.single("image"),
   updateBlogController
 );
 
 // fetch
 router.get("/fetch-blogs", fetchBlogsController);
 
-// with image
+// fetch with image
 // router.get("/fetch-blogs", fetchBlogsController);
 
+// fetch single product
 router.get("/fetch-single-blog/:bid", fetchSingleBlogController);
 
-router.get("/fetch-blogs-image/:bid", fetchBlogImageController);
+// fetch image
+// router.get("/fetch-blogs-image/:bid", fetchBlogImageController);
 
 router.delete(
   "/delete-blog/:bid",

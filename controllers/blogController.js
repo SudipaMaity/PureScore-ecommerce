@@ -52,7 +52,7 @@ import fs from "fs";
 //   }
 // };
 export const createBlogController = async (req, res) => {
-  console.log(req.file);
+  // console.log(req.file);
   try {
     const { name, blog, slug, url } = req.body;
     const image = req.file.path;
@@ -64,8 +64,10 @@ export const createBlogController = async (req, res) => {
         return res.status(401).send({ error: "Blog is required" });
       case !url:
         return res.status(401).send({ error: "url is required" });
-      case !image:
-        return res.status(401).send({ error: "image is required " });
+      case !image && image.size > 1000000:
+        return res
+          .status(401)
+          .send({ error: "image is required and should be less then 1 mb" });
     }
     // generating copy of blog
     const blogs = new blogModel({
@@ -73,13 +75,13 @@ export const createBlogController = async (req, res) => {
       blog,
       slug: slugify(name),
       url,
+      // name: req.file.originalname,
+      // image: {
+      //   data: req.file.buffer,
+      //   contentType: req.file.mimetype,
+      // },
       image,
     });
-    // storing img
-    // if (image) {
-    //   blogs.image.data = fs.readFileSync(image.path);
-    //   blogs.image.contentType = image.type;
-    // }
     await blogs.save();
     res.status(200).send({
       success: true,
@@ -97,10 +99,48 @@ export const createBlogController = async (req, res) => {
 };
 
 // update
+// export const updateBlogController = async (req, res) => {
+//   try {
+//     const { name, blog, url } = req.fields;
+//     const { image } = req.files;
+//     switch (true) {
+//       case !name:
+//         return res.status(401).send({ error: "Name is required" });
+//       case !blog:
+//         return res.status(401).send({ error: "Blog is required" });
+//       case !image && image.size > 1000000:
+//         return res
+//           .status(401)
+//           .send({ error: "image is required and should be less then 1 mb" });
+//     }
+//     const blogs = await blogModel.findByIdAndUpdate(
+//       req.params.bid,
+//       { ...req.fields, slug: slugify(name) },
+//       { new: true }
+//     );
+//     if (image) {
+//       blogs.image.data = fs.readFileSync(image.path);
+//       blogs.image.contentType = image.type;
+//     }
+//     await blogs.save();
+//     res.status(200).send({
+//       success: true,
+//       message: "blog updated successfully",
+//       blogs,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       success: false,
+//       error,
+//       message: "error while updating blog",
+//     });
+//   }
+// };
 export const updateBlogController = async (req, res) => {
   try {
-    const { name, blog, url } = req.fields;
-    const { image } = req.files;
+    const { name, blog, url, slug } = req.body;
+    const image = req.file.path;
     switch (true) {
       case !name:
         return res.status(401).send({ error: "Name is required" });
@@ -113,13 +153,9 @@ export const updateBlogController = async (req, res) => {
     }
     const blogs = await blogModel.findByIdAndUpdate(
       req.params.bid,
-      { ...req.fields, slug: slugify(name) },
+      { name, blog, url, slug: slugify(name), image },
       { new: true }
     );
-    if (image) {
-      blogs.image.data = fs.readFileSync(image.path);
-      blogs.image.contentType = image.type;
-    }
     await blogs.save();
     res.status(200).send({
       success: true,
@@ -163,7 +199,6 @@ export const updateBlogController = async (req, res) => {
 export const fetchBlogsController = async (req, res) => {
   try {
     const blogs = await blogModel.find({}).sort({ createdAt: -1 });
-
     res.status(200).send({
       success: true,
       totalBlogs: blogs.length,
@@ -183,11 +218,7 @@ export const fetchBlogsController = async (req, res) => {
 // fetch single
 export const fetchSingleBlogController = async (req, res) => {
   try {
-    // const blog = await blogModel
-    //   .findOne({
-    //     slug: req.params.slug,
-    //   })
-    const blog = await blogModel.findById(req.params.bid).select("-image");
+    const blog = await blogModel.findById(req.params.bid);
     res.status(200).send({
       success: true,
       blog,
@@ -204,34 +235,33 @@ export const fetchSingleBlogController = async (req, res) => {
 };
 
 // fetch image
-export const fetchBlogImageController = async (req, res) => {
-  try {
-    const blogImage = await blogModel.findById(req.params.bid).select("image");
-    const base64Image = Buffer.from(blogImage.image.data).toString("base64");
-    // console.log("base64Image =========>", base64Image);
-    if (blogImage.image.data) {
-      res.set("contentType", blogImage.image.contentType);
-      res.status(200).send(blogImage.image.data, {
-        success: true,
-        message: "Blog Image",
-      });
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({
-      success: false,
-      error,
-      message: "error while fetching blogs image",
-    });
-  }
-};
+// export const fetchBlogImageController = async (req, res) => {
+//   try {
+//     const blogImage = await blogModel.findById(req.params.bid).select("image");
+//     const base64Image = Buffer.from(blogImage.image.data).toString("base64");
+//     // console.log("base64Image =========>", base64Image);
+//     if (blogImage.image.data) {
+//       res.set("contentType", blogImage.image.contentType);
+//       res.status(200).send(blogImage.image.data, {
+//         success: true,
+//         message: "Blog Image",
+//       });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       success: false,
+//       error,
+//       message: "error while fetching blogs image",
+//     });
+//   }
+// };
 
 // delete blog
 export const deleteBlogController = async (req, res) => {
   try {
-    const blogs = await blogModel
-      .findByIdAndDelete(req.params.bid)
-      .select("-image");
+    const blogs = await blogModel.findByIdAndDelete(req.params.bid);
+    // .select("-image");
     res.status(200).send({
       success: true,
       message: "blog deleted successfully",

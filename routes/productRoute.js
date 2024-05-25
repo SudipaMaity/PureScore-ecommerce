@@ -1,39 +1,54 @@
 import express from "express";
-import formidable from "express-formidable";
+// import formidable from "express-formidable";
+import multer from "multer";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
 import {
   createProductController,
   fetchProductController,
-  fetchProductImageController,
+  // fetchProductImageController,
   fetchSingleProductController,
   updateProductController,
   deleteProductController,
   searchProductController,
   productListController,
   productCategoryController,
-  fetchProductWithImageController,
-  // fetchSingleProductWithImageController,
 } from "../controllers/productController.js";
 
 export const router = express.Router();
+
+const upload = multer({ dest: "uploads/" });
 
 // create products
 router.post(
   "/create-product",
   requireSignIn,
   isAdmin,
-  formidable(),
+  upload.single("image"),
   createProductController
 );
+// router.post(
+//   "/create-product",
+//   requireSignIn,
+//   isAdmin,
+//   formidable(),
+//   createProductController
+// );
 
 // update
 router.put(
   "/update-product/:pid",
   requireSignIn,
   isAdmin,
-  formidable(),
+  upload.single("image"),
   updateProductController
 );
+// router.put(
+//   "/update-product/:pid",
+//   requireSignIn,
+//   isAdmin,
+//   formidable(),
+//   updateProductController
+// );
 
 // fetch products
 router.get("/fetch-product", fetchProductController);
@@ -42,15 +57,7 @@ router.get("/fetch-product", fetchProductController);
 router.get("/fetch-single-product/:pid", fetchSingleProductController);
 
 // fetch image
-router.get("/fetch-Product-Image/:pid", fetchProductImageController);
-
-// fetch all products with image
-router.get("/fetch-products-with-image", fetchProductWithImageController);
-
-// router.get(
-//   "/fetch-single-product-with-image/:pid",
-//   fetchSingleProductWithImageController
-// );
+// router.get("/fetch-Product-Image/:pid", fetchProductImageController);
 
 // delete
 router.delete(
