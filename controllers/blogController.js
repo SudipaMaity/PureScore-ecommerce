@@ -3,39 +3,87 @@ import slugify from "slugify";
 import fs from "fs";
 
 // Add Blog
+// export const createBlogController = async (req, res) => {
+//   try {
+//     const { name, blog, slug, url } = req.fields;
+//     const { image } = req.files;
+//     // validation
+//     switch (true) {
+//       case !name:
+//         return res.status(401).send({ error: "Name is required" });
+//       case !blog:
+//         return res.status(401).send({ error: "Blog is required" });
+//       case !url:
+//         return res.status(401).send({ error: "url is required" });
+//       case !image && image.size > 1000000:
+//         return res
+//           .status(401)
+//           .send({ error: "image is required and should be less then 1 mb" });
+//     }
+//     // generating copy of blog
+//     const blogs = new blogModel({ ...req.fields, slug: slugify(name) });
+//     // storing img
+//     if (image) {
+//       blogs.image.data = fs.readFileSync(image.path);
+//       const base64Image = Buffer.from(blogs.image.data).toString("base64");
+//       // console.log("base64Image", base64Image);
+//       blogs.image.contentType = image.type;
+//     }
+//     await blogs.save();
+//     res.status(200).send({
+//       success: true,
+//       message: "Blog Added Sucessfully",
+//       // blogs: {
+//       //   name,
+//       //   slug,
+//       //   blog,
+//       //   url,
+//       //   image,
+//       // },
+//       blogs,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({
+//       success: false,
+//       error,
+//       message: "Error while creating blog",
+//     });
+//   }
+// };
 export const createBlogController = async (req, res) => {
+  console.log(req.file);
   try {
-    const { name, blog, slug, url } = req.fields;
-    const { image } = req.files;
+    const { name, blog, slug, url } = req.body;
+    const image = req.file.path;
     // validation
     switch (true) {
       case !name:
         return res.status(401).send({ error: "Name is required" });
       case !blog:
         return res.status(401).send({ error: "Blog is required" });
-      case !image && image.size > 1000000:
-        return res
-          .status(401)
-          .send({ error: "image is required and should be less then 1 mb" });
+      case !url:
+        return res.status(401).send({ error: "url is required" });
+      case !image:
+        return res.status(401).send({ error: "image is required " });
     }
     // generating copy of blog
-    const blogs = new blogModel({ ...req.fields, slug: slugify(name) });
+    const blogs = new blogModel({
+      name,
+      blog,
+      slug: slugify(name),
+      url,
+      image,
+    });
     // storing img
-    if (image) {
-      blogs.image.data = fs.readFileSync(image.path);
-      blogs.image.contentType = image.type;
-    }
+    // if (image) {
+    //   blogs.image.data = fs.readFileSync(image.path);
+    //   blogs.image.contentType = image.type;
+    // }
     await blogs.save();
     res.status(200).send({
       success: true,
       message: "Blog Added Sucessfully",
-      // blogs: {
-      //   name,
-      //   slug,
-      //   blog,
-      //   url,
-      //   image,
-      // },
       blogs,
     });
   } catch (error) {
@@ -89,32 +137,12 @@ export const updateBlogController = async (req, res) => {
 };
 
 // fetch
-export const fetchBlogsController = async (req, res) => {
-  try {
-    const blogs = await blogModel
-      .find({})
-      .select("-image")
-      .sort({ createdAt: -1 });
-    res.status(200).send({
-      success: true,
-      totalBlogs: blogs.length,
-      message: "All blogs",
-      blogs,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status.send({
-      success: false,
-      error,
-      message: "error while fetching blogs",
-    });
-  }
-};
-
-// fetch with image
-// export const fetchBlogController = async (req, res) => {
+// export const fetchBlogsController = async (req, res) => {
 //   try {
-//     const blogs = await blogModel.find({}).sort({ createdAt: -1 });
+//     const blogs = await blogModel
+//       .find({})
+//       .select("-image")
+//       .sort({ createdAt: -1 });
 //     res.status(200).send({
 //       success: true,
 //       totalBlogs: blogs.length,
@@ -130,6 +158,27 @@ export const fetchBlogsController = async (req, res) => {
 //     });
 //   }
 // };
+
+// fetch with image
+export const fetchBlogsController = async (req, res) => {
+  try {
+    const blogs = await blogModel.find({}).sort({ createdAt: -1 });
+
+    res.status(200).send({
+      success: true,
+      totalBlogs: blogs.length,
+      message: "All blogs",
+      blogs,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      error,
+      message: "error while fetching blogs",
+    });
+  }
+};
 
 // fetch single
 export const fetchSingleBlogController = async (req, res) => {
@@ -158,6 +207,8 @@ export const fetchSingleBlogController = async (req, res) => {
 export const fetchBlogImageController = async (req, res) => {
   try {
     const blogImage = await blogModel.findById(req.params.bid).select("image");
+    const base64Image = Buffer.from(blogImage.image.data).toString("base64");
+    // console.log("base64Image =========>", base64Image);
     if (blogImage.image.data) {
       res.set("contentType", blogImage.image.contentType);
       res.status(200).send(blogImage.image.data, {
@@ -167,7 +218,7 @@ export const fetchBlogImageController = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    res.status.send({
+    res.status(500).send({
       success: false,
       error,
       message: "error while fetching blogs image",

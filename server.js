@@ -1,5 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
+import multer from "multer";
+// import bodyParser from "body-parser";
+
 import morgan from "morgan"; // morgan show's api request in console
 import connectDB from "./config/db.js";
 import authRoute from "./routes/authRoute.js"; //route of register
@@ -19,6 +22,12 @@ connectDB();
 
 // rest object
 const app = express();
+
+// body Parser
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+//setting static folder
+app.use("/uploads", express.static("uploads"));
 
 //middelwares
 app.use(express.json());

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const blogSchema = new mongoose.Schema(
+const blogDemoSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -14,12 +14,17 @@ const blogSchema = new mongoose.Schema(
       type: String,
       require: true,
     },
+    // image: {
+    //   data: Buffer,
+    //   contentType: String,
+    // },
     image: {
-      data: Buffer,
-      contentType: String,
+      type: String,
+      require: true,
     },
     url: {
       type: String,
+      require: true,
     },
   },
   {
@@ -27,4 +32,4 @@ const blogSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("blog", blogSchema);
+export default mongoose.model("blog", blogDemoSchema);
