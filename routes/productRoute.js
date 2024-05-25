@@ -11,7 +11,7 @@ import {
   searchProductController,
   productListController,
   productCategoryController,
-  // fetchProductWithImageController,
+  fetchProductWithImageController,
   // fetchSingleProductWithImageController,
 } from "../controllers/productController.js";
 
@@ -45,7 +45,7 @@ router.get("/fetch-single-product/:pid", fetchSingleProductController);
 router.get("/fetch-Product-Image/:pid", fetchProductImageController);
 
 // fetch all products with image
-// router.get("/fetch-products-with-image", fetchProductWithImageController);
+router.get("/fetch-products-with-image", fetchProductWithImageController);
 
 // router.get(
 //   "/fetch-single-product-with-image/:pid",

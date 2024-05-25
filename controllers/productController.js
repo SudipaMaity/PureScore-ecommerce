@@ -186,41 +186,27 @@ export const fetchSingleProductController = async (req, res) => {
 };
 
 // fetch with image
-// export const fetchProductWithImageController = async (req, res) => {
-//   try {
-//     const products = await productModel
-//       .find({})
-//       // .select("image")
-//       .populate("category")
-//       // .limit(12)
-//       .sort({ createdAt: -1 });
-//     if (products.image.data) {
-//       console.log("products ==========>", products);
-//       // res.set("contectType", products.image.contentType);
-//       return res.status(200).send({
-//         success: true,
-//         totalProducts: products.length,
-//         message: "All products",
-//         productImage: products.image.data,
-//         products,
-//       });
-//     } else {
-//       res.status(200).send({
-//         success: true,
-//         totalProducts: products.length,
-//         message: "All products",
-//         products,
-//       });
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send({
-//       success: false,
-//       error,
-//       message: "error while fetching products",
-//     });
-//   }
-// };
+export const fetchProductWithImageController = async (req, res) => {
+  try {
+    const products = await productModel
+      .find({})
+      .populate("category")
+      .sort({ createdAt: -1 });
+    return res.status(200).send({
+      success: true,
+      totalProducts: products.length,
+      message: "All products",
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      error,
+      message: "error while fetching products",
+    });
+  }
+};
 
 // fetch single with image
 // export const fetchSingleProductWithImageController = async (req, res) => {
