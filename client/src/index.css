@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  @font-face {
+    font-family: "Campton";
+    src: url(./assets/Fonts/FontsFree-Net-Campton3.ttf), format("truetype");
+    font-weight: normal;
+  }
+  @font-face {
+    font-family: "Atype";
+    src: url("./assets//Fonts/AtypDisplayTRIAL-Regular-BF65727125d566e.ttf"),
+      format("truetype");
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: "Atype";
+    src: url("./assets//Fonts/AtypDisplayTRIAL-Bold-BF65727125c8d1d.ttf")
+      format("truetype");
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: "Atype";
+    src: url("./assets//Fonts/AtypDisplayTRIAL-Light-BF65727125c722b.ttf")
+      format("truetype");
+    font-weight: 300;
+  }
+  @font-face {
+    font-family: "Atype";
+    src: url("./assets//Fonts/AtypDisplayTRIAL-Medium-BF65727125b8683.ttf")
+      format("truetype");
+    font-weight: 600;
+  }
+  @font-face {
+    font-family: "Atype-semi";
+    src: url("./assets//Fonts/AtypDisplayTRIAL-Semibold-BF65727125c6fc9.ttf")
+      format("truetype");
+    font-weight: 500;
+  }
+}
