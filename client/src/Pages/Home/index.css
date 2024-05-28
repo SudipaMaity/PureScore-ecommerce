@@ -1,0 +1,28 @@
+/* Home.css */
+
+.swiper-slide {
+  transition: transform 0.3s ease;
+}
+
+.swiper-slide-prev,
+.swiper-slide-next {
+  transform: scale(1);
+  /* opacity: 0.9; */
+}
+
+.swiper-slide-active {
+  transform: scale(1.1);
+  /* opacity: 1; */
+}
+.custom-swiper-button {
+  @apply absolute top-1/2 transform -translate-y-1/2 text-primary font-bold bg-white p-2 rounded-full shadow-lg;
+}
+
+.swiper-button-next-custom {
+  @apply right-4;
+}
+
+.swiper-button-prev-custom {
+  @apply left-4;
+}
+
