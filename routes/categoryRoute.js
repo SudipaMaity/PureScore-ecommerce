@@ -16,7 +16,7 @@ export const router = express.Router();
 router.post(
   "/create-category",
   requireSignIn,
-  isAdmin,
+  // isAdmin,
   createCategoryController
 );
 
@@ -24,7 +24,7 @@ router.post(
 router.put(
   "/update-category/:id",
   requireSignIn,
-  isAdmin,
+  // isAdmin,
   updateCategoryController
 );
 
@@ -38,7 +38,7 @@ router.get("/single-category/:id", fetchSingleCategoryController);
 router.delete(
   "/delete-category/:id",
   requireSignIn,
-  isAdmin,
+  // isAdmin,
   deleteCategoryController
 );
 

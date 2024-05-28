@@ -46,13 +46,19 @@ export const registerController = async (req, res) => {
       phone,
       address,
       answer,
-      // password: hashedPassword,
+      password: hashedPassword,
     }).save();
 
     res.status(201).send({
       success: true,
       message: "User Register Succcessfully",
-      user,
+      user:{
+        name,
+      email,
+      phone,
+      address,
+      answer,
+      },
     });
   } catch (error) {
     console.log(error);
@@ -77,7 +83,6 @@ export const loginController = async (req, res) => {
     }
     //fetch user
     const user = await userModel.findOne({ email });
-    // console.log('Login User', user);
     if (!user) {
       return res.status(404).send({
         success: false,

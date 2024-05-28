@@ -13,7 +13,7 @@ export const createCategoryController = async (req, res) => {
     // existing category
     const existCategory = await categoryModel.findOne({ name });
     if (existCategory) {
-      return res.status(200).send({
+      return res.status(201).send({
         success: true,
         message: "Category already exist",
       });
@@ -23,7 +23,7 @@ export const createCategoryController = async (req, res) => {
       name,
       slug: slugify(name),
     }).save();
-    res.status(201).send({
+    res.status(200).send({
       success: true,
       message: "new category created",
       category,
@@ -58,7 +58,7 @@ export const updateCategoryController = async (req, res) => {
     res.status(500).send({
       success: false,
       error,
-      message: "error in category update",
+      message: "error while updating category ",
     });
   }
 };

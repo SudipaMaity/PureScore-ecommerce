@@ -105,6 +105,14 @@ export const createProductController = async (req, res) => {
           .status(401)
           .send({ error: "image is required and should be less then 1 mb" });
     }
+    // existing product
+    const existProduct = await productModel.findOne({ name });
+    if (existProduct) {
+      return res.status(201).send({
+        success: true,
+        message: "product already exist",
+      });
+    }
     // generating copy of product
     const product = new productModel({
       name,
@@ -204,7 +212,7 @@ export const updateProductController = async (req, res) => {
       shipping,
       slug,
     } = req.body;
-    const { image } = req.file.path;
+    const image = req.file.path;
     // validation
     switch (true) {
       case !name:
@@ -234,22 +242,23 @@ export const updateProductController = async (req, res) => {
         quantity,
         short_desc,
         desc,
-        slug: slugify(name).image,
+        slug: slugify(name),
+        image,
       },
       { new: true }
     );
-    await product.save();
+    // await product.save();
     res.status(200).send({
       success: true,
-      message: "Product updated Sucessfully",
       product,
+      message: "Product updated Sucessfully",
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       error,
-      message: "error while creating product",
+      message: "error while updating product",
     });
   }
 };

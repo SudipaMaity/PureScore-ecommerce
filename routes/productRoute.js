@@ -22,7 +22,7 @@ const upload = multer({ dest: "uploads/" });
 router.post(
   "/create-product",
   requireSignIn,
-  isAdmin,
+  // isAdmin,
   upload.single("image"),
   createProductController
 );
@@ -38,7 +38,7 @@ router.post(
 router.put(
   "/update-product/:pid",
   requireSignIn,
-  isAdmin,
+  // isAdmin,
   upload.single("image"),
   updateProductController
 );
@@ -63,7 +63,7 @@ router.get("/fetch-single-product/:pid", fetchSingleProductController);
 router.delete(
   "/delete-product/:pid",
   requireSignIn,
-  isAdmin,
+  // isAdmin,
   deleteProductController
 );
 
